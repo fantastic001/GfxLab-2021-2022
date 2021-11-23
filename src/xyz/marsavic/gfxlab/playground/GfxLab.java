@@ -5,13 +5,17 @@ import xyz.marsavic.gfxlab.animation.*;
 import xyz.marsavic.gfxlab.graphics3d.*;
 import xyz.marsavic.gfxlab.graphics3d.raytracers.RayTracerTest;
 import xyz.marsavic.gfxlab.graphics3d.solids.Ball;
+import xyz.marsavic.gfxlab.graphics3d.solids.BoundedHalfSpace;
 import xyz.marsavic.gfxlab.graphics3d.solids.HalfSpace;
 import xyz.marsavic.gfxlab.tonemapping.ColorTransformForColorMatrix;
 import xyz.marsavic.gfxlab.tonemapping.ToneMappingFunctionSimple;
 import xyz.marsavic.objectinstruments.annotations.GadgetDouble;
 
+import java.security.AlgorithmConstraints;
 import java.util.Collection;
 import java.util.List;
+
+import org.checkerframework.checker.regex.qual.PartialRegex;
 
 
 public class GfxLab {
@@ -29,7 +33,8 @@ public class GfxLab {
 	@GadgetDouble(p = -10, q = 10)
 	public double lightZ = 0;
 	
-	
+	@GadgetDouble(p = 1, q = 10)
+	public double triangleZ = 1;
 	
 	synchronized void setup() {
 		scene = new Scene() {
@@ -37,17 +42,25 @@ public class GfxLab {
 			public Collection<Body> bodies() {
 				return List.of(
 		            Body.uniform(
-							Ball.cr(Vec3.xyz(1, 0, 4), 2),
-				            new Material(Color.hsb(0, 0.8, 1.0))
+							new BoundedHalfSpace(
+									    Vec3.xyz(0,0,triangleZ*0.5), 
+										Vec3.xyz(0.5,0.5,triangleZ*0.5),
+										Vec3.xyz(1, 0, triangleZ *0.5)
+									),
+				            new Material(Color.rgb(0, 0.8, 1.0))
 		            ),
 		            Body.uniform(
 							Ball.cr(Vec3.xyz(-0.3, -0.6, 2.7), 0.7),
 				            new Material(Color.hsb(0.66, 0.8, 1.0))
 		            ),
 		            Body.uniform(
-							HalfSpace.pn(Vec3.xyz(0, -1, 0), Vec3.xyz(0, 1, 0)),
-							new Material(Color.hsb(0.33, 0.8, 1.0))
+							Ball.cr(Vec3.xyz(0.5, -0.6, 2.7), 0.7),
+				            new Material(Color.hsb(0.66, 0.8, 1.0))
 		            ),
+		            //Body.uniform(
+					//		HalfSpace.pn(Vec3.xyz(0, -1, 0), Vec3.xyz(0, 1, 0)),
+					//		new Material(Color.hsb(0.33, 0.8, 1.0))
+		            //),
 		            Body.uniform(
 							HalfSpace.pn(Vec3.xyz(1, 0, 0), Vec3.xyz(-1, 0, 0)),
 							new Material(Color.hsb(0.33, 0.8, 1.0))

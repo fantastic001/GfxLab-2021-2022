@@ -94,4 +94,8 @@ public class App extends Application {
 		
 		gfxLab.onChange();
 	}
+	
+	public static void main(String[] args) {
+		Application.launch();
+	}
 }
