@@ -3,24 +3,19 @@ package xyz.marsavic.gfxlab.playground;
 import xyz.marsavic.gfxlab.*;
 import xyz.marsavic.gfxlab.animation.*;
 import xyz.marsavic.gfxlab.graphics3d.*;
+import xyz.marsavic.gfxlab.graphics3d.cameras.Perspective;
+import xyz.marsavic.gfxlab.graphics3d.cameras.TransformedCamera;
 import xyz.marsavic.gfxlab.graphics3d.raytracers.RayTracerTest;
-import xyz.marsavic.gfxlab.graphics3d.solids.Ball;
-import xyz.marsavic.gfxlab.graphics3d.solids.BoundedHalfSpace;
-import xyz.marsavic.gfxlab.graphics3d.solids.HalfSpace;
+import xyz.marsavic.gfxlab.graphics3d.scenes.DiscoRoom;
 import xyz.marsavic.gfxlab.tonemapping.ColorTransformForColorMatrix;
 import xyz.marsavic.gfxlab.tonemapping.ToneMappingFunctionSimple;
 import xyz.marsavic.objectinstruments.annotations.GadgetDouble;
-
-import java.security.AlgorithmConstraints;
-import java.util.Collection;
-import java.util.List;
-
-import org.checkerframework.checker.regex.qual.PartialRegex;
 
 
 public class GfxLab {
 	
 	Scene scene;
+	Camera camera;
 	RayTracer rayTracer;
 	Animation<Matrix<Color>> animation;
 	ToneMappingFunction toneMappingFunction;
@@ -30,62 +25,41 @@ public class GfxLab {
 	@GadgetDouble(p = 0, q = 5)
 	public double brightnessFactor = 1.0;
 	
-	@GadgetDouble(p = -10, q = 10)
-	public double lightZ = 0;
+	public int nBalls = 0;
+	
+	public int nLights = 256;
+	
+	public int seed = 0;
+	
+	@GadgetDouble(p = -0.05, q = 0.05)
+	public double phi = 0;
+	
+	@GadgetDouble(p = 0, q = 0.5)
+	public double fovAngle = 0.14;
 	
 	@GadgetDouble(p = 1, q = 10)
 	public double triangleZ = 1;
 	
 	synchronized void setup() {
-		scene = new Scene() {
-			@Override
-			public Collection<Body> bodies() {
-				return List.of(
-		            Body.uniform(
-							new BoundedHalfSpace(
-									    Vec3.xyz(0,0,triangleZ*0.5), 
-										Vec3.xyz(0.5,0.5,triangleZ*0.5),
-										Vec3.xyz(1, 0, triangleZ *0.5)
-									),
-				            new Material(Color.rgb(0, 0.8, 1.0))
-		            ),
-		            Body.uniform(
-							Ball.cr(Vec3.xyz(-0.3, -0.6, 2.7), 0.7),
-				            new Material(Color.hsb(0.66, 0.8, 1.0))
-		            ),
-		            Body.uniform(
-							Ball.cr(Vec3.xyz(0.5, -0.6, 2.7), 0.7),
-				            new Material(Color.hsb(0.66, 0.8, 1.0))
-		            ),
-		            //Body.uniform(
-					//		HalfSpace.pn(Vec3.xyz(0, -1, 0), Vec3.xyz(0, 1, 0)),
-					//		new Material(Color.hsb(0.33, 0.8, 1.0))
-		            //),
-		            Body.uniform(
-							HalfSpace.pn(Vec3.xyz(1, 0, 0), Vec3.xyz(-1, 0, 0)),
-							new Material(Color.hsb(0.33, 0.8, 1.0))
-		            )
-				);
-			}
-			
-			@Override
-			public Collection<Light> lights() {
-				return List.of(
-						Light.pc(Vec3.xyz(-1, 1, lightZ), Color.WHITE)
-				);
-			}
-		};
+		scene = new DiscoRoom(nBalls, nLights, seed);
 		
-		rayTracer = new RayTracerTest(scene, Collider.BruteForce::new);
+		camera = new TransformedCamera(
+				Perspective.fov(fovAngle),
+				Affine.IDENTITY
+						.andThen(Affine.translation(Vec3.xyz(0, 0, -3)))
+						.andThen(Affine.rotationAboutY(phi))
+		);
+		
+		rayTracer = new RayTracerTest(scene, Collider.BruteForce::new, camera);
 		
 		animation =
-//				new RendererAggregateLastFrame(
+				new RendererAggregateLastFrame(
 						new AnimationColorSampling(
 								Vec3.xyz(1, 640, 640),
 								Transformation::toGeometric,
 								rayTracer
 						)
-//				)
+				)
 		;
 		
 		toneMappingFunction = new ToneMappingFunctionSimple(
