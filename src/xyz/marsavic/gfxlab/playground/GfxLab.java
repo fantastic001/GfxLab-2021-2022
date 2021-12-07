@@ -7,6 +7,9 @@ import xyz.marsavic.gfxlab.graphics3d.cameras.Perspective;
 import xyz.marsavic.gfxlab.graphics3d.cameras.TransformedCamera;
 import xyz.marsavic.gfxlab.graphics3d.raytracers.RayTracerTest;
 import xyz.marsavic.gfxlab.graphics3d.scenes.DiscoRoom;
+import xyz.marsavic.gfxlab.graphics3d.scenes.OpenRoom;
+import xyz.marsavic.gfxlab.graphics3d.scenes.OpenRoomWithObject;
+import xyz.marsavic.gfxlab.graphics3d.solids.Simplex;
 import xyz.marsavic.gfxlab.tonemapping.ColorTransformForColorMatrix;
 import xyz.marsavic.gfxlab.tonemapping.ToneMappingFunctionSimple;
 import xyz.marsavic.objectinstruments.annotations.GadgetDouble;
@@ -37,11 +40,20 @@ public class GfxLab {
 	@GadgetDouble(p = 0, q = 0.5)
 	public double fovAngle = 0.14;
 	
-	@GadgetDouble(p = 1, q = 10)
-	public double triangleZ = 1;
+	@GadgetDouble(p = -2, q = 3)
+	public double triangleZ = -2;
+	
+	@GadgetDouble(p = -1, q = 1)
+	public double triangleY = 0;
+	
+	@GadgetDouble(p = -1, q = 1)
+	public double lightPos = 0;
 	
 	synchronized void setup() {
-		scene = new DiscoRoom(nBalls, nLights, seed);
+		scene = new OpenRoomWithObject(Body.uniform(
+				new Simplex(Vec3.xyz(1,triangleY-1, triangleZ), Vec3.xyz(0, triangleY, triangleZ), Vec3.xyz(-1, triangleY-1, triangleZ)),
+				new Material(Color.code(0xffff00))
+			), lightPos);
 		
 		camera = new TransformedCamera(
 				Perspective.fov(fovAngle),
