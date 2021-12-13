@@ -32,4 +32,9 @@ public class OpenRoom extends Scene.Base {
 	public OpenRoom() {
 		this(Material.MATTE);
 	}
+	
+	public OpenRoom add(Body body) {
+		bodies.add(body);
+		return this;
+	}
 }

@@ -30,4 +30,9 @@ public class OpenRoomRG extends Scene.Base {
 		);
 	}
 	
+	public OpenRoomRG add(Body body) {
+		bodies.add(body);
+		return this;
+	}
+	
 }
