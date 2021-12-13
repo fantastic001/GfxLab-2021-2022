@@ -24,7 +24,7 @@ public class Terrain implements Solid {
 		this.height = height;
 		this.precision = precision;
 		f = def;
-		this.pos = pos;
+		this.pos = pos.sub(Vec3.xyz(width/2, length/2, 0));
 		triangles = new ArrayList<>();
 		double dx = width / precision; 
 		double dy = length / precision; 
@@ -32,20 +32,20 @@ public class Terrain implements Solid {
 		for (int i = 0; i<precision; i++) {
 			for (int j = 0; j<precision; j++) {
 				double x = pos.x() + i*dx; 
-				double y = pos.y() +  j*dy;
+				double y = pos.z() +  j*dy;
 				double xi = 2*(x - pos.x()) / width - 1;
 				double yi = 2*(y - pos.y()) / length - 1;
 				triangles.add(
 							new Simplex(
-									Vec3.xyz(x, pos.z() + height * f.get(xi,yi), y), 
-									Vec3.xyz(x,pos.z() + height * f.get(xi, yi+di), y+dy), 
-									Vec3.xyz(x+dx, pos.z() + height * f.get(xi+di, yi+di), y+dy))
+									Vec3.xyz(x, pos.y() + height * f.get(xi,yi), y), 
+									Vec3.xyz(x,pos.y() + height * f.get(xi, yi+di), y+dy), 
+									Vec3.xyz(x+dx, pos.y() + height * f.get(xi+di, yi+di), y+dy))
 						);
 				triangles.add(
 						new Simplex(
-								Vec3.xyz(x+dx, pos.z() + height * f.get(xi+di,yi+di), y+dy), 
-								Vec3.xyz(x+dx,pos.z() + height * f.get(xi+di, yi), y), 
-								Vec3.xyz(x, pos.z() + height * f.get(xi, yi), y))
+								Vec3.xyz(x+dx, pos.y() + height * f.get(xi+di,yi+di), y+dy), 
+								Vec3.xyz(x+dx,pos.y() + height * f.get(xi+di, yi), y), 
+								Vec3.xyz(x, pos.y() + height * f.get(xi, yi), y))
 					);
 			}
 		}
