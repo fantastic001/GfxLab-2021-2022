@@ -8,8 +8,10 @@ import xyz.marsavic.gfxlab.graphics3d.cameras.TransformedCamera;
 import xyz.marsavic.gfxlab.graphics3d.raytracers.RayTracerTest;
 import xyz.marsavic.gfxlab.graphics3d.scenes.DiscoRoom;
 import xyz.marsavic.gfxlab.graphics3d.scenes.OpenRoom;
-import xyz.marsavic.gfxlab.graphics3d.scenes.OpenRoomWithObject;
+import xyz.marsavic.gfxlab.graphics3d.scenes.OpenRoomRG;
+import xyz.marsavic.gfxlab.graphics3d.solids.Ball;
 import xyz.marsavic.gfxlab.graphics3d.solids.Simplex;
+import xyz.marsavic.gfxlab.graphics3d.solids.Terrain;
 import xyz.marsavic.gfxlab.graphics3d.scenes.Mirrors;
 import xyz.marsavic.gfxlab.tonemapping.ColorTransformForColorMatrix;
 import xyz.marsavic.gfxlab.tonemapping.ToneMappingFunctionSimple;
@@ -42,9 +44,7 @@ public class GfxLab {
 	@GadgetDoubleExponential(p = 0x1p-4, q = 0x1p+4)
 	public double power = 1.0;
 	
-	@GadgetDouble(p = -0.05, q = 0.05)
-	public double phi = 0;
-	
+
 	@GadgetDouble(p = 0, q = 0.5)
 	public double fovAngle = 0.14;
 	
@@ -64,18 +64,60 @@ public class GfxLab {
 	public int maxDepth = 16;
 	
 	
+	@GadgetDouble(p=-1, q=1)
+	public double cameraX = 0;
+	@GadgetDouble(p=-1, q=1)
+	public double cameraY = 0;
+	@GadgetDouble(p=-5, q=1)
+	public double cameraZ = -3;
+	@GadgetDouble(p=-0.2, q=0.2)
+	public double alpha = 0;
+	@GadgetDouble(p = -0.2, q = 0.2)
+	public double phi = 0;
 	
 	synchronized void setup() {
-		scene =
-//				new DiscoRoom(nBalls, nLights, shininess, seed);
-				new Mirrors(nBalls, omicron);
-//				new MirrorRoom(reflectivity);
+		Solid mirrorSolid = new Terrain(
+				1, // width
+				1, // length
+				0.5, //height
+				2, // precision 
+				Vec3.xyz(-1, 0, 0), // bottom-right position
+				new Terrain.TerrainDefinition() {
+					
+					@Override
+					public double get(double x, double y) {
+						return 1-y;
+					}
+				}
+			);
+//		mirrorSolid = Ball.cr(Vec3.xyz(0.5, -0.5, -1), 0.5);
+		Body mirror = Body.uniform(mirrorSolid, Material.MIRROR); 
+		Body crown = Body.uniform(new Terrain(
+				0.5, // width
+				0.4, // length
+				0.02, //height
+				8, // precision 
+				Vec3.xyz(-0.5, 0.2, -0.1), // position
+				new Terrain.TerrainDefinition() {
+					
+					@Override
+					public double get(double x, double y) {
+						return 1 + 5*Math.sin(5*x);
+					}
+				}
+			), Material.BLACK.diffuse(Color.rgb(0.9, 0.9, 0)).specular(Color.WHITE).shininess(64));
+		scene = new OpenRoomRG()
+				.add(mirror)
+				.add(crown)
+				.add(Body.uniform(Ball.cr(Vec3.xyz(-0.5, -0.5, -0.1), 0.5), Material.BLACK.diffuse(Color.code(0xff0000))))
+			;
 		
 		camera = new TransformedCamera(
 				Perspective.fov(fovAngle),
 				Affine.IDENTITY
-						.andThen(Affine.translation(Vec3.xyz(0, 0, -3)))
+						.andThen(Affine.translation(Vec3.xyz(cameraX, cameraY, cameraZ)))
 						.andThen(Affine.rotationAboutY(phi))
+						.andThen(Affine.rotationAboutX(alpha))
 		);
 		
 		rayTracer = new RayTracerTest(
