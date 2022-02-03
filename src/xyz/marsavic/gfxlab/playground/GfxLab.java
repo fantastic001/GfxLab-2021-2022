@@ -6,8 +6,12 @@ import xyz.marsavic.gfxlab.graphics3d.*;
 import xyz.marsavic.gfxlab.graphics3d.cameras.Perspective;
 import xyz.marsavic.gfxlab.graphics3d.cameras.TransformedCamera;
 import xyz.marsavic.gfxlab.graphics3d.raytracers.PathTracer;
+import xyz.marsavic.gfxlab.graphics3d.raytracers.RayTracerSimple;
 import xyz.marsavic.gfxlab.graphics3d.scenes.Oranges;
+import xyz.marsavic.gfxlab.graphics3d.scenes.TestCSG;
 import xyz.marsavic.gfxlab.graphics3d.scenes.TestGI;
+import xyz.marsavic.gfxlab.profiling.ProfiledCollider;
+import xyz.marsavic.gfxlab.profiling.StopWatch;
 import xyz.marsavic.gfxlab.tonemapping.ColorTransformForColorMatrix;
 import xyz.marsavic.gfxlab.tonemapping.ToneMappingFunctionSimple;
 import xyz.marsavic.objectinstruments.annotations.GadgetDouble;
@@ -48,37 +52,47 @@ public class GfxLab {
 	@GadgetDouble(p = -1, q = 1)
 	public double y = 0;
 	
+	
+	private StopWatch stopWatch;
+	
+	public GfxLab() {
+		this.stopWatch = new StopWatch();
+		this.stopWatch.addDefaultWriter(nano -> {
+			System.out.println(nano);
+		});
+	}
+	
 	synchronized void setup() {
 		scene =
 //				new DiscoRoom(nBalls, nLights, shininess, seed);
 //				new Mirrors(nBalls, omicron);
 //				new MirrorRoom(reflectivity);
-				new Oranges(3);
+//				new Oranges(3);
 //				new TestTransformed(phiX, phiY, phiZ);
-//				new TestCSG(t);
+				new TestCSG(t);
 //				new TestGI();
 				
 		camera = new TransformedCamera(
 				Perspective.fov(fovAngle),
-				Affine.IDENTITY
+				Affine.IDENTITY.translation(Vec3.xyz(0, 0, -2.5))
 		);
 		
-//		rayTracer = new RayTracerSimple(
+		rayTracer = new RayTracerSimple(
+				scene,
+				bodies -> new ProfiledCollider(new Collider.BruteForce(bodies), stopWatch),
+				camera,
+				true, // show diffuse
+				true, // show specular
+				true, // show shadows 
+				maxDepth
+		);
+		
+//		rayTracer = new PathTracer(
 //				scene,
 //				Collider.BruteForce::new,
 //				camera,
-//				showDiffuse,
-//				showSpecular,
-//				shadows,
 //				maxDepth
 //		);
-		
-		rayTracer = new PathTracer(
-				scene,
-				Collider.BruteForce::new,
-				camera,
-				maxDepth
-		);
 		
 		animation =
 				new RendererAggregateLastFrame(
