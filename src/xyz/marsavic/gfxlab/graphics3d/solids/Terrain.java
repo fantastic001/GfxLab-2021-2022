@@ -6,6 +6,7 @@ import org.checkerframework.checker.units.qual.min;
 import org.checkerframework.common.value.qual.ArrayLen;
 
 import xyz.marsavic.gfxlab.Vec3;
+import xyz.marsavic.gfxlab.bvh.AABB;
 import xyz.marsavic.gfxlab.graphics3d.Body;
 import xyz.marsavic.gfxlab.graphics3d.Hit;
 import xyz.marsavic.gfxlab.graphics3d.Material;
@@ -68,6 +69,15 @@ public class Terrain implements Solid {
 
 	public interface TerrainDefinition {
 		double get(double x, double y);
+	}
+
+	@Override
+	public AABB getAABB() {
+		AABB result = AABB.empty();
+		for (Simplex triangle : triangles) {
+			result = result.union(triangle.getAABB());
+		}
+		return result; 
 	}
 
 }

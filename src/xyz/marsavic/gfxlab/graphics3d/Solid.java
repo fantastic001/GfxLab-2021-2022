@@ -1,5 +1,6 @@
 package xyz.marsavic.gfxlab.graphics3d;
 
+import xyz.marsavic.gfxlab.bvh.AABB;
 
 public interface Solid {
 	
@@ -23,6 +24,11 @@ public interface Solid {
 					return null;
 				}
 				return hitO.withN(tInvTransposed.applyTo(hitO.n()));
+			}
+
+			@Override
+			public AABB getAABB() {
+				return Solid.this.getAABB().transform(t);
 			}
 		};
 	}
@@ -85,6 +91,15 @@ public interface Solid {
 					t[iFirst] = hits[iFirst] == null ? Double.POSITIVE_INFINITY : hits[iFirst].t();
 				}
 			}
+
+			@Override
+			public AABB getAABB() {
+				AABB result = AABB.empty();
+				for (Solid solid : solids) {
+					result = result.union(solid.getAABB());
+				}
+				return result;
+			}
 		};
 	}
 	
@@ -146,6 +161,17 @@ public interface Solid {
 					t[iFirst] = hits[iFirst] == null ? Double.POSITIVE_INFINITY : hits[iFirst].t();
 				}
 			}
+
+			@Override
+			public AABB getAABB() {
+				AABB result = null;
+				for (Solid solid : solids) {
+					if (result == null) result = solid.getAABB();
+					else result = result.intersection(solid.getAABB());
+				}
+				return result;
+				
+			}
 		};
 	}
 	
@@ -206,8 +232,16 @@ public interface Solid {
 					t[iFirst] = hits[iFirst] == null ? Double.POSITIVE_INFINITY : hits[iFirst].t();
 				}
 			}
+
+			@Override
+			public AABB getAABB() {
+				return solids[0].getAABB();
+			}
 		};
 	}
+
+
+	AABB getAABB();
 	
 	
 	

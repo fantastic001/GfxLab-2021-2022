@@ -2,6 +2,7 @@ package xyz.marsavic.gfxlab.graphics3d.solids;
 
 import xyz.marsavic.geometry.Vector;
 import xyz.marsavic.gfxlab.Vec3;
+import xyz.marsavic.gfxlab.bvh.AABB;
 import xyz.marsavic.gfxlab.graphics3d.GeometryUtils;
 import xyz.marsavic.gfxlab.graphics3d.Hit;
 import xyz.marsavic.gfxlab.graphics3d.Ray;
@@ -138,6 +139,13 @@ public class HalfSpace implements Solid {
 					(b_f - b_e * e_f) / sinSqr
 			);
 		}
+	}
+
+
+
+	@Override
+	public AABB getAABB() {
+		return AABB.box(this, Vec3.ONES.mul(Double.NEGATIVE_INFINITY), Vec3.ONES.mul(Double.POSITIVE_INFINITY));
 	}
 	
 }

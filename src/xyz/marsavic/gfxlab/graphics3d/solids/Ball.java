@@ -2,6 +2,7 @@ package xyz.marsavic.gfxlab.graphics3d.solids;
 
 import xyz.marsavic.geometry.Vector;
 import xyz.marsavic.gfxlab.Vec3;
+import xyz.marsavic.gfxlab.bvh.AABB;
 import xyz.marsavic.gfxlab.graphics3d.Hit;
 import xyz.marsavic.gfxlab.graphics3d.Ray;
 import xyz.marsavic.gfxlab.graphics3d.Solid;
@@ -83,6 +84,12 @@ public class Ball implements Solid {
 			);
 		}
 		
+	}
+
+
+	@Override
+	public AABB getAABB() {
+		return AABB.box(this, c.sub(Vec3.ONES.mul(r)), c.add(Vec3.ONES.mul(r)));
 	}
 	
 }

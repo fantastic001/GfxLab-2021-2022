@@ -3,6 +3,7 @@ package xyz.marsavic.gfxlab.graphics3d.solids;
 
 import xyz.marsavic.gfxlab.BoxedObjectFactory;
 import xyz.marsavic.gfxlab.Vec3;
+import xyz.marsavic.gfxlab.bvh.AABB;
 import xyz.marsavic.gfxlab.graphics3d.Hit;
 import xyz.marsavic.gfxlab.graphics3d.Ray;
 import xyz.marsavic.gfxlab.graphics3d.Solid;
@@ -88,6 +89,12 @@ public class Box implements Solid {
 			return tn_(t, n_.inverse());
 		}
 		
+	}
+
+
+	@Override
+	public AABB getAABB() {
+		return AABB.box(this, p, q);
 	}
 	
 	

@@ -1,6 +1,7 @@
 package xyz.marsavic.gfxlab.graphics3d.solids;
 
 import xyz.marsavic.gfxlab.Vec3;
+import xyz.marsavic.gfxlab.bvh.AABB;
 import xyz.marsavic.gfxlab.graphics3d.Hit;
 import xyz.marsavic.gfxlab.graphics3d.Ray;
 import xyz.marsavic.gfxlab.graphics3d.Solid;
@@ -64,6 +65,14 @@ public class Simplex implements Solid {
 				k3 > 0
 				) return result; 
 				else return null;
+	}
+
+	@Override
+	public AABB getAABB() {
+		return AABB.box(this,
+			Vec3.xyz(Math.min(p1.x(), Math.min(p2.x(), p3.x())), Math.min(p1.y(), Math.min(p2.y(), p3.y())), Math.min(p1.z(), Math.min(p2.z(), p3.z()))),
+			Vec3.xyz(Math.max(p1.x(), Math.max(p2.x(), p3.x())), Math.max(p1.y(), Math.max(p2.y(), p3.y())), Math.max(p1.z(), Math.max(p2.z(), p3.z())))
+		);
 	}
 	
 }
