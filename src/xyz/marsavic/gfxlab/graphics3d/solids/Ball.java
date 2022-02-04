@@ -89,7 +89,7 @@ public class Ball implements Solid {
 
 	@Override
 	public AABB getAABB() {
-		return AABB.box(this, c.sub(Vec3.ONES.mul(r)), c.add(Vec3.ONES.mul(r)));
+		return AABB.box(c.sub(Vec3.ONES.mul(r)), c.add(Vec3.ONES.mul(r)));
 	}
 	
 }

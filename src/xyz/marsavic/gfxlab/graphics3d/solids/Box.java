@@ -94,7 +94,7 @@ public class Box implements Solid {
 
 	@Override
 	public AABB getAABB() {
-		return AABB.box(this, p, q);
+		return AABB.box(p, q);
 	}
 	
 	

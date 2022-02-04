@@ -2,6 +2,7 @@ package xyz.marsavic.gfxlab.playground;
 
 import xyz.marsavic.gfxlab.*;
 import xyz.marsavic.gfxlab.animation.*;
+import xyz.marsavic.gfxlab.bvh.StupidBVHFactory;
 import xyz.marsavic.gfxlab.graphics3d.*;
 import xyz.marsavic.gfxlab.graphics3d.cameras.Perspective;
 import xyz.marsavic.gfxlab.graphics3d.cameras.TransformedCamera;
@@ -77,9 +78,13 @@ public class GfxLab {
 				Affine.IDENTITY.translation(Vec3.xyz(0, 0, -2.5))
 		);
 		
+		StupidBVHFactory factory = new StupidBVHFactory();
+		factory.constructNewTree(scene.bodies());
+		
 		rayTracer = new RayTracerSimple(
 				scene,
-				bodies -> new ProfiledCollider(new Collider.BruteForce(bodies), stopWatch),
+//				bodies -> new ProfiledCollider(new Collider.BruteForce(bodies), stopWatch),
+				bodies -> new ProfiledCollider(factory.at(bodies), stopWatch),
 				camera,
 				true, // show diffuse
 				true, // show specular
