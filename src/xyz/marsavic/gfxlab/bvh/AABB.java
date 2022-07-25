@@ -111,5 +111,9 @@ public class AABB {
 			result = result.union(body.solid().getAABB());
 		}
 		return result;
-	}	
+	}
+	
+	public Vec3 getCenter() {
+		return p2.sub(p1).div(2).add(p1);
+	}
 }
