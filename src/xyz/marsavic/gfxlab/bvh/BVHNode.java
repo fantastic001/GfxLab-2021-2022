@@ -1,5 +1,6 @@
 package xyz.marsavic.gfxlab.bvh;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +25,21 @@ public class BVHNode implements Collider {
 		this.bodies = bodies; 	
 	}
 	
-	
+	public Collection<Body> getBodies() 
+	{
+		if (bodies == null) 
+		{
+			ArrayList<Body> result = new ArrayList<>();
+			for (Body body : left.getBodies()) {
+				result.add(body);
+			}
+			for (Body body : right.getBodies()) {
+				result.add(body);
+			}
+			return result;
+		}
+		else return bodies;
+	}
 	
 	public AABB getBox() {
 		return box;
@@ -74,6 +89,29 @@ public class BVHNode implements Collider {
 				else return right.collide(ray);
 			}
 			return null;
+		}
+	}
+	
+	public void addBody(Body body) {
+		if (bodies == null) // we are not in leaf 
+		{
+			if (left.getBox().intersection(body.solid().getAABB()).isEmpty()) 
+			{
+				// we add it to right and enlarge box 
+				right.addBody(body);
+			}
+			else if (right.getBox().intersection(body.solid().getAABB()).isEmpty()) 
+			{
+				// we add it to left 
+				left.addBody(body);
+			}
+			else {
+				bodies = getBodies();
+				bodies.add(body);
+				box = AABB.unionAll(bodies);
+				left = null; 
+				right = null;
+			}
 		}
 	}
 	
