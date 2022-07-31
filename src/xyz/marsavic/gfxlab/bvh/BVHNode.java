@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.checkerframework.checker.signature.qual.Identifier;
+
 import xyz.marsavic.gfxlab.Vec3;
 import xyz.marsavic.gfxlab.graphics3d.Body;
 import xyz.marsavic.gfxlab.graphics3d.Collider;
@@ -99,11 +101,13 @@ public class BVHNode implements Collider {
 			{
 				// we add it to right and enlarge box 
 				right.addBody(body);
+				box = left.getBox().union(right.getBox());
 			}
 			else if (right.getBox().intersection(body.solid().getAABB()).isEmpty()) 
 			{
 				// we add it to left 
 				left.addBody(body);
+				box = left.getBox().union(right.getBox()); 
 			}
 			else {
 				bodies = getBodies();
@@ -112,6 +116,35 @@ public class BVHNode implements Collider {
 				left = null; 
 				right = null;
 			}
+		}
+	}
+
+	public void print() {
+		System.out.println("__________");
+		this.printChild(0);
+		
+	}
+	private void printChild(int tabs) 
+	{
+		
+		String identation = "";
+		for (int i  = 0; i<tabs; i++) 
+		{
+			identation += "  ";
+		}
+		System.out.println(identation + "node");
+		if (isLeaf()) 
+		{
+			for (Body body : bodies) 
+			{
+				
+				System.out.println(identation + "|-" + body.toString());
+			}
+		}
+		else 
+		{
+			if (left != null) left.printChild(tabs+1);
+			if (right != null) right.printChild(tabs+1);
 		}
 	}
 	

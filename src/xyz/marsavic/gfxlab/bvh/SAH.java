@@ -18,8 +18,7 @@ public class SAH {
 	}
 	
 	public BVHNode getNode(int numberOfBins, double kt, double ki) {
-		if (solids.size() < 2) {
-			// TODO convert solids to bodies
+		if (solids.size() <= 2) {
 			return BVHNode.leaf(this.solids);
 		}
 		AABB all = AABB.empty();
@@ -68,6 +67,7 @@ public class SAH {
 				minCost = cost;
 			}
 		}
+		System.out.println("Bins on left: " + left);
 		ArrayList<Body> solidsLeft = new ArrayList<>();
 		ArrayList<Body> solidsRight = new ArrayList<>();
 		for (int i = 0; i<numberOfBins; i++) {

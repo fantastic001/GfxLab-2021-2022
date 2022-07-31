@@ -17,8 +17,9 @@ public class SAHBin {
 	}
 	
 	public boolean isPartOf(AABB box) {
-		return end.sub(start).dot(box.getCenter()) > 0 && 
-				start.sub(end).dot(box.getCenter()) > 0;
+		double x = end.sub(start).dot(box.getCenter().sub(start)); 
+		double y = end.sub(start).dot(box.getCenter().sub(start));
+		return x >= 0 && y <= end.sub(start).dot(end.sub(start));
 		
 	}
 	public void addBox(Body solid) {

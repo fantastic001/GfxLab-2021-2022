@@ -2,7 +2,7 @@ package xyz.marsavic.gfxlab.playground;
 
 import xyz.marsavic.gfxlab.*;
 import xyz.marsavic.gfxlab.animation.*;
-import xyz.marsavic.gfxlab.bvh.StupidBVHFactory;
+import xyz.marsavic.gfxlab.bvh.BVHFactory;
 import xyz.marsavic.gfxlab.graphics3d.*;
 import xyz.marsavic.gfxlab.graphics3d.cameras.Perspective;
 import xyz.marsavic.gfxlab.graphics3d.cameras.TransformedCamera;
@@ -56,11 +56,14 @@ public class GfxLab {
 	
 	private StopWatch stopWatch;
 	
+	BVHFactory factory;
+	
 	public GfxLab() {
+		factory = new BVHFactory();
 		this.stopWatch = new StopWatch();
-		this.stopWatch.addDefaultWriter(nano -> {
-			System.out.println(nano);
-		});
+//		this.stopWatch.addDefaultWriter(nano -> {
+//			System.out.println(nano);
+//		});
 	}
 	
 	synchronized void setup() {
@@ -77,10 +80,7 @@ public class GfxLab {
 				Perspective.fov(fovAngle),
 				Affine.IDENTITY.translation(Vec3.xyz(0, 0, -2.5))
 		);
-		
-		StupidBVHFactory factory = new StupidBVHFactory();
-		factory.constructNewTree(scene.bodies());
-		
+				
 		rayTracer = new RayTracerSimple(
 				scene,
 //				bodies -> new ProfiledCollider(new Collider.BruteForce(bodies), stopWatch),
