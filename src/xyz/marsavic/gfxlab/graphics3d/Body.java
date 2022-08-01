@@ -56,4 +56,9 @@ public interface Body {
 			}
 		};
 	}
+	
+	public default String show() 
+	{
+		return this.solid().toString();
+	}
 }

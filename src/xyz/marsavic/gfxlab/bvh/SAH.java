@@ -18,6 +18,7 @@ public class SAH {
 	}
 	
 	public BVHNode getNode(int numberOfBins, double kt, double ki) {
+		if (numberOfBins == 0) return BVHNode.leaf(solids);
 		if (solids.size() <= 2) {
 			return BVHNode.leaf(this.solids);
 		}
@@ -67,21 +68,31 @@ public class SAH {
 				minCost = cost;
 			}
 		}
-		System.out.println("Bins on left: " + left);
 		ArrayList<Body> solidsLeft = new ArrayList<>();
 		ArrayList<Body> solidsRight = new ArrayList<>();
 		for (int i = 0; i<numberOfBins; i++) {
 			for (Body s : bins[i].getsolids()) {
-				if (i < left) {
+				if (i < left && solidsLeft.indexOf(s) < 0) {
 					solidsLeft.add(s);
 				}
-				else {
+				else if (solidsRight.indexOf(s) < 0) {
 					solidsRight.add(s);
 				}
 			}
 		}
-		SAH leftSAH = new SAH(solidsLeft);
-		SAH rightSAH = new SAH(solidsRight);
-		return BVHNode.cover(leftSAH.getNode(numberOfBins, kt, ki), rightSAH.getNode(numberOfBins, kt, ki));
+		if (solidsLeft.size() == 0) 
+		{
+			return BVHNode.leaf(solidsRight);
+		}
+		else if (solidsRight.size() == 0) 
+		{
+			return BVHNode.leaf(solidsLeft);
+		}
+		else {
+			
+			SAH leftSAH = new SAH(solidsLeft);
+			SAH rightSAH = new SAH(solidsRight);
+			return BVHNode.cover(leftSAH.getNode(numberOfBins/2, kt, ki), rightSAH.getNode(numberOfBins/2, kt, ki));
+		}		
 	}
 }

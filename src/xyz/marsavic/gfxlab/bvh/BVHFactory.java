@@ -25,7 +25,7 @@ public class BVHFactory implements Function1<Collider, Collection<Body>>{
 			mybodies.add(body);
 		}
 		SAH sah = new SAH(mybodies);
-		root = sah.getNode(512, 2.0, 10);
+		root = sah.getNode(32, 2.0, 10);
 		System.out.println("Printing resulting node");
 		root.print();
 

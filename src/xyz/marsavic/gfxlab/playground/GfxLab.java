@@ -9,6 +9,7 @@ import xyz.marsavic.gfxlab.graphics3d.cameras.TransformedCamera;
 import xyz.marsavic.gfxlab.graphics3d.raytracers.PathTracer;
 import xyz.marsavic.gfxlab.graphics3d.raytracers.RayTracerSimple;
 import xyz.marsavic.gfxlab.graphics3d.scenes.Oranges;
+import xyz.marsavic.gfxlab.graphics3d.scenes.TestBVH;
 import xyz.marsavic.gfxlab.graphics3d.scenes.TestCSG;
 import xyz.marsavic.gfxlab.graphics3d.scenes.TestGI;
 import xyz.marsavic.gfxlab.profiling.ProfiledCollider;
@@ -73,8 +74,9 @@ public class GfxLab {
 //				new MirrorRoom(reflectivity);
 //				new Oranges(3);
 //				new TestTransformed(phiX, phiY, phiZ);
-				new TestCSG(t);
+//	testCSG(t);
 //				new TestGI();
+				new TestBVH(t);
 				
 		camera = new TransformedCamera(
 				Perspective.fov(fovAngle),

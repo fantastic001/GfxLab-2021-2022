@@ -138,7 +138,7 @@ public class BVHNode implements Collider {
 			for (Body body : bodies) 
 			{
 				
-				System.out.println(identation + "|-" + body.toString());
+				System.out.println(identation + "|-" + body.show());
 			}
 		}
 		else 

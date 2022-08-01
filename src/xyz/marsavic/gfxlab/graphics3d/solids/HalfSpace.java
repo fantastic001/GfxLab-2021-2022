@@ -145,7 +145,7 @@ public class HalfSpace implements Solid {
 
 	@Override
 	public AABB getAABB() {
-		return AABB.box(Vec3.ONES.mul(Double.NEGATIVE_INFINITY), Vec3.ONES.mul(Double.POSITIVE_INFINITY));
+		throw new RuntimeException("Cannot use AABBs on halfspaces");
 	}
 	
 }
