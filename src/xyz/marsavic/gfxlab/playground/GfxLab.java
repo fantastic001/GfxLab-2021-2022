@@ -76,7 +76,7 @@ public class GfxLab {
 //				new TestTransformed(phiX, phiY, phiZ);
 //	testCSG(t);
 //				new TestGI();
-				new TestBVH(t);
+				new TestBVH(triangleZ);
 				
 		camera = new TransformedCamera(
 				Perspective.fov(fovAngle),
@@ -100,7 +100,6 @@ public class GfxLab {
 //				camera,
 //				maxDepth
 //		);
-		
 		animation =
 				new RendererAggregateLastFrame(
 						new AnimationColorSampling(

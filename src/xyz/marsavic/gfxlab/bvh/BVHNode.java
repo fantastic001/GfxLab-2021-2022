@@ -132,7 +132,7 @@ public class BVHNode implements Collider {
 		{
 			identation += "  ";
 		}
-		System.out.println(identation + "node");
+		System.out.println(identation + "node" + this.getBox().toString());
 		if (isLeaf()) 
 		{
 			for (Body body : bodies) 

@@ -22,9 +22,9 @@ public class TestBVH extends Scene.Base {
 		Material m = Material.matte(Color.hsb(0.16, 0.8, 0.9)).specular(Color.WHITE);
 //		Material m = Material.GLASS;
 		
-		bodies.add(Body.uniform(s, m));
+//		bodies.add(Body.uniform(s, m));
 		bodies.add(Body.uniform(Ball.cr(Vec3.xyz(2, 1, 2), 0.5), Material.MATTE));
-		bodies.add(Body.uniform(Ball.cr(Vec3.xyz(2, 2, 2), 0.5), Material.MATTE));
+		bodies.add(Body.uniform(Ball.cr(Vec3.xyz(2, 2 +t, 2), 0.5), Material.MATTE));
 		bodies.add(Body.uniform(Ball.cr(Vec3.xyz(2, -1, 2), 0.5), Material.MATTE));
 		bodies.add(Body.uniform(Ball.cr(Vec3.xyz(2, -2, 2), 0.5), Material.MATTE));
 		Collections.addAll(lights,

@@ -116,4 +116,10 @@ public class AABB {
 	public Vec3 getCenter() {
 		return p2.sub(p1).div(2).add(p1);
 	}
+	
+	@Override
+	public String toString() 
+	{
+		return "Box(" + p1.toString() + ", " + p2.toString() + ")";
+	}
 }
