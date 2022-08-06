@@ -3,6 +3,7 @@ package xyz.marsavic.gfxlab.bvh;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.checkerframework.checker.signature.qual.Identifier;
@@ -31,14 +32,14 @@ public class BVHNode implements Collider {
 	{
 		if (bodies == null) 
 		{
-			ArrayList<Body> result = new ArrayList<>();
+			bodies = new LinkedList<>();
 			for (Body body : left.getBodies()) {
-				result.add(body);
+				bodies.add(body);
 			}
 			for (Body body : right.getBodies()) {
-				result.add(body);
+				bodies.add(body);
 			}
-			return result;
+			return bodies;
 		}
 		else return bodies;
 	}
@@ -60,7 +61,13 @@ public class BVHNode implements Collider {
 	}
 	
 	public static BVHNode cover(BVHNode left, BVHNode right) {
-		return new BVHNode(left.box.union(right.box), null, left, right);
+		if (! left.getBox().intersection(right.getBox()).isEmpty()) 
+		{
+			Collection<Body> bodies = left.getBodies();
+			bodies.addAll(right.getBodies());
+			return BVHNode.leaf(bodies);
+		}
+		else return new BVHNode(left.box.union(right.box), null, left, right);
 	}
 	
 	public boolean isLeaf() {

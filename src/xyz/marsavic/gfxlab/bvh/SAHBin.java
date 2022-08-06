@@ -1,6 +1,7 @@
 package xyz.marsavic.gfxlab.bvh;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import xyz.marsavic.gfxlab.Vec3;
 import xyz.marsavic.gfxlab.graphics3d.Body;
@@ -36,7 +37,7 @@ public class SAHBin {
 		return solids.size();
 	}
 	
-	public static SAHBin generateFromSolids(Vec3 start, Vec3 end, ArrayList<Body> solids) {
+	public static SAHBin generateFromSolids(Vec3 start, Vec3 end, Collection<Body> solids) {
 		SAHBin result = new SAHBin(start, end);
 		for (Body solid : solids) {
 			result.addBox(solid);

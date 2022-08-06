@@ -1,6 +1,8 @@
 package xyz.marsavic.gfxlab.bvh;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 
 import xyz.marsavic.gfxlab.Vec3;
 import xyz.marsavic.gfxlab.graphics3d.Body;
@@ -9,11 +11,11 @@ import xyz.marsavic.tuples.Pair;
 
 public class SAH {
 
-	private ArrayList<Body> solids; 
+	private Collection<Body> solids; 
 	
 	
 	
-	public SAH(ArrayList<Body> solids) {
+	public SAH(Collection<Body> solids) {
 		this.solids = solids;
 	}
 	
@@ -31,8 +33,8 @@ public class SAH {
 			: all.width() >= all.height() && all.width() >= all.length() ? 
 					Vec3.xyz(0, 1, 0)
 					: Vec3.xyz(0, 0, 1);
-		Vec3 start = solids.get(0).solid().getAABB().getCenter();
-		Vec3 end = solids.get(0).solid().getAABB().getCenter();
+		Vec3 start = solids.stream().findFirst().get().solid().getAABB().getCenter();
+		Vec3 end = solids.stream().findFirst().get().solid().getAABB().getCenter();
 		for (Body s : solids) {
 			if (s.solid().getAABB().getCenter().dot(line) < start.dot(line)) {
 				start = s.solid().getAABB().getCenter();
@@ -68,8 +70,8 @@ public class SAH {
 				minCost = cost;
 			}
 		}
-		ArrayList<Body> solidsLeft = new ArrayList<>();
-		ArrayList<Body> solidsRight = new ArrayList<>();
+		LinkedList<Body> solidsLeft = new LinkedList<>();
+		LinkedList<Body> solidsRight = new LinkedList<>();
 		for (int i = 0; i<numberOfBins; i++) {
 			for (Body s : bins[i].getsolids()) {
 				if (i < left && solidsLeft.indexOf(s) < 0) {
