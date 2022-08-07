@@ -62,9 +62,9 @@ public class GfxLab {
 	public GfxLab() {
 		factory = new BVHFactory();
 		this.stopWatch = new StopWatch();
-//		this.stopWatch.addDefaultWriter(nano -> {
-//			System.out.println(nano);
-//		});
+		this.stopWatch.addDefaultWriter(nano -> {
+			System.out.println(nano);
+		});
 	}
 	
 	synchronized void setup() {
@@ -74,7 +74,7 @@ public class GfxLab {
 //				new MirrorRoom(reflectivity);
 //				new Oranges(3);
 //				new TestTransformed(phiX, phiY, phiZ);
-//	testCSG(t);
+//				new TestCSG(t);
 //				new TestGI();
 				new TestBVH(triangleZ);
 				
