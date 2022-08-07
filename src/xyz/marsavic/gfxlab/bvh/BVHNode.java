@@ -12,6 +12,7 @@ import xyz.marsavic.gfxlab.Vec3;
 import xyz.marsavic.gfxlab.graphics3d.Body;
 import xyz.marsavic.gfxlab.graphics3d.Collider;
 import xyz.marsavic.gfxlab.graphics3d.Ray;
+import xyz.marsavic.gfxlab.graphics3d.Collider.BruteForce;
 import xyz.marsavic.utils.Numeric;
 
 public class BVHNode implements Collider {
@@ -20,12 +21,17 @@ public class BVHNode implements Collider {
 	private BVHNode left; 
 	private BVHNode right; 
 	private Collection<Body> bodies;
+	Collider bfCollider;
 	
 	private BVHNode(AABB box, Collection<Body> bodies, BVHNode left, BVHNode right) { 
 		this.left = left; 
 		this.right = right;
 		this.box = box; 
-		this.bodies = bodies; 	
+		this.bodies = bodies;
+		if (isLeaf()) 
+		{
+			bfCollider = new Collider.BruteForce(bodies);
+		}
 	}
 	
 	public Collection<Body> getBodies() 
@@ -61,13 +67,7 @@ public class BVHNode implements Collider {
 	}
 	
 	public static BVHNode cover(BVHNode left, BVHNode right) {
-		if (! left.getBox().intersection(right.getBox()).isEmpty()) 
-		{
-			Collection<Body> bodies = left.getBodies();
-			bodies.addAll(right.getBodies());
-			return BVHNode.leaf(bodies);
-		}
-		else return new BVHNode(left.box.union(right.box), null, left, right);
+		return new BVHNode(left.box.union(right.box), null, left, right);
 	}
 	
 	public boolean isLeaf() {
@@ -76,8 +76,8 @@ public class BVHNode implements Collider {
 
 	@Override
 	public Collision collide(Ray ray) {
-		if (isLeaf()) {
-			return new Collider.BruteForce(bodies).collide(ray);
+		if (bfCollider != null) {
+			return bfCollider.collide(ray);
 		}
 		else {
 			Vec3 tP = box.getP1().sub(ray.p()).div(ray.d());
@@ -94,8 +94,14 @@ public class BVHNode implements Collider {
 			
 			if (max0 < min1) {
 				Collision leftCollision = left.collide(ray);
-				if (leftCollision != null) return leftCollision;
-				else return right.collide(ray);
+				Collision rightCollision = right.collide(ray);
+				if (rightCollision == null) return leftCollision;
+				else if (leftCollision == null) return rightCollision;
+				else {
+					if (rightCollision.hit().t() < leftCollision.hit().t())
+						return rightCollision;
+					else return leftCollision;
+				}
 			}
 			return null;
 		}
