@@ -23,10 +23,15 @@ public class TestBVH extends Scene.Base {
 //		Material m = Material.GLASS;
 		
 //		bodies.add(Body.uniform(s, m));
-		bodies.add(Body.uniform(Ball.cr(Vec3.xyz(0, 1, 2), 0.5), Material.matte(Color.rgb(255, 0, 0))));
-		bodies.add(Body.uniform(Ball.cr(Vec3.xyz(0, 2 +t, 2), 0.5), Material.matte(Color.rgb(0, 255, 0))));
-		bodies.add(Body.uniform(Ball.cr(Vec3.xyz(0, -1, 2), 0.5), Material.matte(Color.rgb(0,255,255))));
-		bodies.add(Body.uniform(Ball.cr(Vec3.xyz(0, -2, 2), 0.5), Material.matte(Color.rgb(255, 255, 255))));
+		for (int i = 2; i<=200; i += 5) {
+			for (int j = -1; j<=1; j += 1) 
+			{
+				bodies.add(Body.uniform(Ball.cr(Vec3.xyz(j, 1, i), 0.5), Material.matte(Color.rgb(255, 0, 0))));
+				bodies.add(Body.uniform(Ball.cr(Vec3.xyz(j, 2 +t, i), 0.5), Material.matte(Color.rgb(0, 255, 0))));
+				bodies.add(Body.uniform(Ball.cr(Vec3.xyz(j, -2, i), 0.5), Material.matte(Color.rgb(255, 255, 255))));				
+			}
+		}
+		
 		Collections.addAll(lights,
 				Light.p(Vec3.xyz(-0.5, 0.75, -0.5)),
 				Light.p(Vec3.xyz(-0.5, 0.75,  0.5)),
